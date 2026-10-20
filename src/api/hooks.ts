@@ -320,6 +320,7 @@ export function useEventStream() {
   useEffect(() => {
     let isSubscribed = true;
     let eventSub: EventSubscription | null = null;
+    const startup = new AbortController();
     // Set when the SSE connection errors; the next delivered event proves it is back, so state is resynced.
     let streamDropped = false;
 
@@ -363,6 +364,9 @@ export function useEventStream() {
         }
       }
 
+      // Let the initial HTTP burst release its connections before reserving one for SSE.
+      await hermesApi.waitForIdle?.(startup.signal);
+
       // 3. Open SSE stream starting strictly after newest historical event
       if (isSubscribed) {
         eventSub = hermesApi.subscribeEvents(
@@ -397,6 +401,7 @@ export function useEventStream() {
 
     return () => {
       isSubscribed = false;
+      startup.abort();
       if (eventSub) {
         eventSub.unsubscribe();
       }

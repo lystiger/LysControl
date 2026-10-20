@@ -148,6 +148,23 @@ export class HttpHermesApi implements HermesApi {
   private baseUrl: string;
   private lastEventId: string | null = null;
   private activeEventSource: EventSource | null = null;
+  private requestsInFlight = 0;
+  private idleWaiters = new Set<() => void>();
+
+  /** Recheck after waking: a completed request can immediately start another request in the burst. */
+  async waitForIdle(signal?: AbortSignal): Promise<void> {
+    while (this.requestsInFlight > 0 && !signal?.aborted) {
+      await new Promise<void>((resolve) => {
+        const done = () => {
+          this.idleWaiters.delete(done);
+          signal?.removeEventListener('abort', done);
+          resolve();
+        };
+        this.idleWaiters.add(done);
+        signal?.addEventListener('abort', done, { once: true });
+      });
+    }
+  }
 
   constructor(baseUrl = 'http://localhost:8000') {
     // Strip trailing slash if present
@@ -160,12 +177,18 @@ export class HttpHermesApi implements HermesApi {
    */
   private async request(url: string, init?: RequestInit): Promise<Response> {
     let res: Response;
+    this.requestsInFlight += 1;
     try {
       // A request that never settles would leave its panel loading forever; after the limit it counts as unreachable.
       res = await fetch(url, { ...init, signal: init?.signal ?? AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
     } catch {
       recordUnreachable(this.baseUrl);
       throw new HermesUnreachableError(this.baseUrl);
+    } finally {
+      this.requestsInFlight -= 1;
+      if (this.requestsInFlight === 0) {
+        for (const wake of this.idleWaiters) wake();
+      }
     }
     // Only a successful response is contact. A 4xx/5xx proves the server answered, not that the data is current.
     if (res.ok) recordContact();
