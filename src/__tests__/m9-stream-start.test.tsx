@@ -24,6 +24,7 @@ const response = (data: unknown) => new Response(JSON.stringify(data));
 
 describe('M9 stream startup idle barrier', () => {
   beforeEach(() => {
+    useConsoleStore.setState({ allEvents: [] });
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(response({})));
     vi.spyOn(hermesApi, 'getTraceEvents').mockResolvedValue([
       event('middle', 20), event('newest', 30), event('oldest', 10)
@@ -107,5 +108,21 @@ describe('M9 stream startup idle barrier', () => {
     second.resolve(response({}));
     await Promise.all([secondRequest, barrier]);
     expect(idle).toBe(true);
+  });
+
+  it('reloads history after the wait when it had no cursor, so events from the wait are not lost', async () => {
+    const pending = deferred<Response>();
+    vi.mocked(fetch).mockReturnValueOnce(pending.promise);
+    const agents = hermesApi.getAgents();
+    vi.mocked(hermesApi.getTraceEvents).mockResolvedValueOnce([]).mockResolvedValueOnce([event('during-wait', 60)]);
+    const subscribe = vi.spyOn(hermesApi, 'subscribeEvents').mockReturnValue({ unsubscribe: vi.fn() });
+    const { unmount } = renderHook(() => useEventStream());
+    await waitFor(() => expect(hermesApi.getTraceEvents).toHaveBeenCalledOnce());
+    await act(async () => { pending.resolve(response([])); await agents; });
+    await waitFor(() => expect(subscribe).toHaveBeenCalledOnce());
+    expect(hermesApi.getTraceEvents).toHaveBeenCalledTimes(2);
+    expect(subscribe).toHaveBeenCalledWith(expect.any(Function), expect.any(Function), 'during-wait');
+    expect(useConsoleStore.getState().allEvents).toContainEqual(event('during-wait', 60));
+    unmount();
   });
 });
