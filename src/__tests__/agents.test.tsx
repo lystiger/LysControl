@@ -54,12 +54,11 @@ describe('Agent UI & Portrait Fallbacks', () => {
           sigil: 'BUILD'
         }}
         status="RUNNING"
-        phase="BUILD"
       />
     );
 
     expect(screen.getByAltText('Gemini Portrait')).toBeInTheDocument();
-    expect(screen.getByText('BUILD')).toBeInTheDocument();
+    expect(screen.queryByText('BUILD')).not.toBeInTheDocument();
   });
 
   it('gracefully handles missing presentation object altogether', () => {
@@ -67,12 +66,11 @@ describe('Agent UI & Portrait Fallbacks', () => {
       <AgentPortrait
         displayName="Subagent-99"
         status="IDLE"
-        phase="CUSTOM"
       />
     );
 
     expect(screen.getAllByText('S').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText('CUSTOM')).toBeInTheDocument();
+    expect(screen.queryByText('CUSTOM')).not.toBeInTheDocument();
   });
 
   it('renders view character sheet trigger on Agent Detail when characterCardUrl is present', async () => {

@@ -6,7 +6,6 @@ interface AgentPortraitProps {
   displayName: string;
   presentation?: AgentPresentation;
   status?: AgentStatus;
-  phase?: string;
   crawlCode?: string;
   size?: 'sm' | 'md' | 'lg';
   showCode?: boolean;
@@ -16,7 +15,6 @@ export const AgentPortrait: React.FC<AgentPortraitProps> = ({
   displayName,
   presentation,
   status = 'IDLE',
-  phase = 'IDLE',
   crawlCode = '',
   size = 'md',
   showCode = true
@@ -137,9 +135,8 @@ export const AgentPortrait: React.FC<AgentPortraitProps> = ({
               borderTopColor: `color-mix(in srgb, ${accentColor} 20%, transparent)`,
               backgroundColor: isRunning ? `color-mix(in srgb, ${accentColor} 8%, transparent)` : 'color-mix(in srgb, var(--lys-text-primary) 2%, transparent)'
             }}
-            className="flex-shrink-0 border-t px-1.5 py-0.5 flex items-center justify-between font-sans text-[10px] tracking-wider"
+            className="flex-shrink-0 border-t px-1.5 py-0.5 flex items-center justify-end font-sans text-[10px] tracking-wider"
           >
-            <span style={{ color: accentColor }}>{phase}</span>
             <span className="text-lys-faint">{initial}</span>
           </div>
         </div>

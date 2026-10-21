@@ -89,7 +89,7 @@ export const SettingsRoute: React.FC = () => {
               >
                 <span className="text-lys-primary">{ag.displayName}</span>
                 <span className="text-lys-muted text-right break-words">
-                  {ag.phase || 'IDLE'} · {ag.model}
+                  {ag.model}
                 </span>
               </div>
             ))}

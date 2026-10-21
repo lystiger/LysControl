@@ -111,7 +111,6 @@ export const AgentDossier: React.FC<{ agent: AgentDetail; updatedAt?: number | n
                   <Spec label="Provider">{agent.provider || <UnknownValue reason="Hermes did not report a provider" />}</Spec>
                   <Spec label="Model">{agent.model || <UnknownValue reason="Hermes did not report a model" />}</Spec>
                   <Spec label="Role">{agent.role || <UnknownValue reason="Hermes did not report a role" />}</Spec>
-                  <Spec label="Phase">{agent.phase || <UnknownValue reason="Hermes reports no phase for this agent" />}</Spec>
                   <Spec label="Current task">{agent.currentTask || <UnknownValue reason="Hermes reports no current task for this agent" />}</Spec>
                   <Spec label="Active tool">{agent.activeTool || <UnknownValue reason="Hermes reports no active tool for this agent" />}</Spec>
                 </div>
