@@ -5,7 +5,6 @@ import { ACTIVE_JOB_STATUSES } from '../../api/adapters/httpAdapter';
 import { ErrorState, Freshness, LoadingState, ResourceError, StaleNotice, UnknownValue } from '../../components/DataStates';
 import { Card } from '../../components/Card';
 import { CopyId } from '../../components/CopyId';
-import { HERMES_ART } from '../../theme/agentArt';
 import { useNow } from '../execution/useNow';
 import { formatElapsed } from './jobTiming';
 import { JobTokens } from './JobRealData';
@@ -41,7 +40,6 @@ export const ActiveExecutionCard: React.FC<ActiveExecutionCardProps> = ({ onOpen
               <div className="text-[11px] font-medium tracking-wider uppercase text-lys-faint">Active execution</div>
               <div className="mt-1 font-display text-[22px] font-semibold text-lys-muted">No active execution</div>
             </div>
-            <img src={HERMES_ART} alt="" aria-hidden="true" className="h-12 w-auto opacity-60 shrink-0" />
           </div>
         </div>
       </Card>

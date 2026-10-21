@@ -5,7 +5,6 @@ import { EVENT_CATEGORIES, EventCategory, SEVERITY_COLOR, eventCategory, eventKi
 import { EmptyState, UNKNOWN_TIME_LABEL as UNKNOWN_TIME } from '../components/DataStates';
 import { Card } from '../components/Card';
 import { PageHeader, HeaderCount } from '../components/PageHeader';
-import { HERMES_ART } from '../theme/agentArt';
 import { FilterPills } from '../components/FilterPills';
 import { CopyId } from '../components/CopyId';
 import { useArrowNavigation, useEscape } from '../components/keyboard';
@@ -126,7 +125,7 @@ export const EventsRoute: React.FC = () => {
 
             <div ref={listRef} role="log" aria-live="polite" aria-relevant="additions text" aria-label="Events" className="flex flex-col">
               {shown.length === 0 && (
-                <EmptyState art={HERMES_ART}>{allEvents.length === 0 ? 'No events' : 'No matching events'}</EmptyState>
+                <EmptyState>{allEvents.length === 0 ? 'No events' : 'No matching events'}</EmptyState>
               )}
               {shown.map((e) => {
                 const severity = eventSeverity(e.kind);

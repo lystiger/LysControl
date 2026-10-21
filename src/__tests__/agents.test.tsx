@@ -73,7 +73,7 @@ describe('Agent UI & Portrait Fallbacks', () => {
     expect(screen.queryByText('CUSTOM')).not.toBeInTheDocument();
   });
 
-  it('renders view character sheet trigger on Agent Detail when characterCardUrl is present', async () => {
+  it('does not offer a character sheet, since the console shows no character art', async () => {
     render(
       <MemoryRouter initialEntries={['/agents/claude']}>
         <Routes>
@@ -84,7 +84,7 @@ describe('Agent UI & Portrait Fallbacks', () => {
 
     // The name appears in the roster and as the dossier heading; the heading is the dossier.
     expect(await screen.findByRole('heading', { name: 'Claude' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /character sheet/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /character sheet/i })).not.toBeInTheDocument();
   });
 
   it('renders Agent Detail without view character sheet when characterCardUrl is not present', async () => {

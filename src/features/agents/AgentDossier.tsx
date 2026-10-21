@@ -5,10 +5,7 @@ import { AgentDetail } from '../../api/types';
 import { Freshness, UnknownValue } from '../../components/DataStates';
 import { CopyId } from '../../components/CopyId';
 import { Card } from '../../components/Card';
-import { FocalImage } from '../../components/FocalImage';
 import { HeaderNotReported, NotReportedItem } from '../../components/NotReported';
-import { agentArt } from '../../theme/agentArt';
-import { useConsoleStore } from '../../stores/useConsoleStore';
 import { AgentContextMeter } from './AgentContextMeter';
 import { presenceAccent } from './AgentPresence';
 import { AgentModelSelector } from './AgentModelSelector';
@@ -33,9 +30,7 @@ const NOT_REPORTED: NotReportedItem[] = [
  * Agent dossier: portrait at sensible fixed size (~1/3 width capped), information panel getting the rest.
  */
 export const AgentDossier: React.FC<{ agent: AgentDetail; updatedAt?: number | null }> = ({ agent, updatedAt }) => {
-  const { setActiveDossierAgent } = useConsoleStore();
   const accent = presenceAccent(agent);
-  const art = agentArt(agent.id);
   const isRunning = agent.status === 'RUNNING';
   // The portrait is the hero; the specs and model panels fold away so it can take the full width.
   const [detailsOpen, setDetailsOpen] = useState(true);
@@ -79,28 +74,16 @@ export const AgentDossier: React.FC<{ agent: AgentDetail; updatedAt?: number | n
             <Icon icon={detailsOpen ? PanelRightClose : PanelRightOpen} />
             Details
           </button>
-          {art && (
-            <button
-              type="button"
-              onClick={() => setActiveDossierAgent(agent)}
-              className="text-[12px] px-3 py-1.5 border cursor-pointer hover:bg-lys-surface-2 transition-colors"
-              style={{ borderColor: accent, color: accent }}
-            >
-              Character sheet
-            </button>
-          )}
         </div>
       </header>
 
       <div
         className={`flex-1 grid gap-5 p-6 items-stretch ${detailsOpen ? 'grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(280px,360px)] xl:grid-cols-[minmax(0,1fr)_340px]' : 'grid-cols-1'}`}
       >
-        <Card accent={accent} label="Agent art" className="min-h-[460px] h-full w-full">
-          {art ? (
-            <FocalImage src={art.card} alt={`${agent.displayName} character art`} focus={art.cardFocus} className="absolute inset-0 h-full w-full" />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-[12px] text-lys-faint">No art</div>
-          )}
+        <Card accent={accent} label="Agent" className="min-h-[460px] h-full w-full">
+          <div style={{ color: accent }} className="absolute inset-0 flex items-center justify-center font-display text-[120px] font-semibold opacity-80" aria-hidden="true">
+            {agent.displayName[0]}
+          </div>
         </Card>
 
         {detailsOpen && (

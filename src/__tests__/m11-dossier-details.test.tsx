@@ -29,7 +29,6 @@ describe('agent dossier details toggle', () => {
     expect(screen.getByRole('button', { name: 'Show details' })).toHaveAttribute('aria-expanded', 'false');
     expect(document.getElementById('agent-details')).toBeNull();
     expect(screen.queryByText('model panel')).not.toBeInTheDocument();
-    expect(screen.getByRole('img', { name: 'Claude character art' })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Show details' }));
     expect(screen.getByText('model panel')).toBeInTheDocument();
