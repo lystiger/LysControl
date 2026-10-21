@@ -80,37 +80,19 @@ export const SettingsRoute: React.FC = () => {
           <div className="font-sans text-[11px] tracking-wider text-lys-faint mb-3.5">
             REGISTERED OPERATORS
           </div>
-          <div>
-            <div className="flex flex-col gap-1">
-              {agents.map((ag) => {
-                const accentColor = ag.presentation?.accentColor || 'var(--lys-text-muted)';
-                return (
-                  <div
-                    key={ag.id}
-                    onClick={() => navigate(`/agents/${ag.id}`)}
-                    style={{ borderLeftColor: accentColor }}
-                    className="flex items-center gap-3.5 p-2.5 bg-lys-surface-1 border-l-2 hover:bg-lys-surface-2 cursor-pointer transition-colors"
-                  >
-                    <span
-                      style={{ borderColor: accentColor, backgroundColor: `color-mix(in srgb, ${accentColor} 13%, transparent)` }}
-                      className="w-3.5 h-3.5 border clip-hex flex items-center justify-center font-sans text-[9px]"
-                    >
-                      {ag.displayName[0]}
-                    </span>
-                    <span className="w-20 text-[13px] text-lys-primary">{ag.displayName}</span>
-                    <span style={{ color: accentColor }} className="w-16 font-sans text-[11px] tracking-wider font-semibold">
-                      {ag.phase || 'IDLE'}
-                    </span>
-                    <span className="flex-1 min-w-0 font-sans text-[11px] text-lys-muted break-words">
-                      {ag.model}
-                    </span>
-                    <span className="w-24 text-right font-sans text-[11px] text-lys-faint">
-                      {ag.capabilities[0] || 'agent'}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+          <div className="flex flex-col gap-2.5">
+            {agents.map((ag) => (
+              <div
+                key={ag.id}
+                onClick={() => navigate(`/agents/${ag.id}`)}
+                className="flex justify-between items-baseline gap-4 font-sans text-[12px] cursor-pointer hover:underline"
+              >
+                <span className="text-lys-primary">{ag.displayName}</span>
+                <span className="text-lys-muted text-right break-words">
+                  {ag.phase || 'IDLE'} · {ag.model}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
