@@ -144,8 +144,9 @@ export const useConsoleStore = create<ConsoleUIState>((set, get) => ({
       let nextStatuses = state.agentRuntimeStatuses;
       const sourceId = event.source?.id?.toLowerCase();
 
+      // Sprint runner phases report as phase.* with the agent as source; they drive the same status.
       if (sourceId && event.source.kind === 'agent') {
-        if (event.kind === 'agent.started') {
+        if (event.kind === 'agent.started' || event.kind === 'phase.started') {
           nextStatuses = {
             ...nextStatuses,
             [sourceId]: {
@@ -153,7 +154,7 @@ export const useConsoleStore = create<ConsoleUIState>((set, get) => ({
               currentTask: event.metadata?.task || event.metadata?.phase || event.detail
             }
           };
-        } else if (event.kind === 'agent.finished') {
+        } else if (event.kind === 'agent.finished' || event.kind === 'phase.completed') {
           nextStatuses = {
             ...nextStatuses,
             [sourceId]: {
@@ -161,7 +162,7 @@ export const useConsoleStore = create<ConsoleUIState>((set, get) => ({
               currentTask: undefined
             }
           };
-        } else if (event.kind === 'agent.failed') {
+        } else if (event.kind === 'agent.failed' || event.kind === 'phase.failed') {
           nextStatuses = {
             ...nextStatuses,
             [sourceId]: {
