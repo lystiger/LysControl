@@ -1,12 +1,9 @@
 import React from 'react';
 import { PageHeader } from '../components/PageHeader';
-import { Freshness } from '../components/DataStates';
 import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import { ExecutionBackendStrip } from '../features/execution/ExecutionBackendStrip';
 import { useConsoleStore } from '../stores/useConsoleStore';
 import { prefersReducedMotion } from '../theme/motion';
-import { useAgents, useExecution, useSettings } from '../api/hooks';
+import { useAgents, useSettings } from '../api/hooks';
 
 export const SettingsRoute: React.FC = () => {
   const navigate = useNavigate();
@@ -20,7 +17,6 @@ export const SettingsRoute: React.FC = () => {
 
   const { agents } = useAgents();
   const { settings, updatedAt } = useSettings();
-  const { view, snapshotStatus, snapshotLoadedAt } = useExecution();
 
   return (
     <div className="flex flex-col min-h-full select-none bg-lys-base">
@@ -79,25 +75,12 @@ export const SettingsRoute: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column: Budget & Policy */}
+        {/* Right Column: Registered operators (live from GET /agents) */}
         <div className="flex-1 min-w-[340px] p-5 bg-lys-base">
           <div className="font-sans text-[11px] tracking-wider text-lys-faint mb-3.5">
-            BUDGET &amp; POLICY
+            REGISTERED OPERATORS
           </div>
-          <div className="flex flex-col gap-2.5">
-            {settings.policy.map((s, idx) => (
-              <div key={idx} className="flex justify-between items-baseline font-sans text-[12px]">
-                <span className="text-lys-muted">{s.label}</span>
-                <span style={{ color: s.color || 'var(--lys-text-primary)' }}>{s.value}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Registered Operators Summary */}
-          <div className="mt-6 pt-4 border-t border-lys-subtle">
-            <div className="font-sans text-[11px] tracking-wider text-lys-faint mb-3">
-              REGISTERED OPERATORS
-            </div>
+          <div>
             <div className="flex flex-col gap-1">
               {agents.map((ag) => {
                 const accentColor = ag.presentation?.accentColor || 'var(--lys-text-muted)';
@@ -130,16 +113,6 @@ export const SettingsRoute: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Execution backends: live from GET /execution (replaces the static Herdr sandbox mock) */}
-      <div className="p-5 border-b border-lys-subtle bg-lys-surface-0">
-        <div className="flex items-center justify-between mb-3 font-sans text-[11px]">
-          <span className="tracking-wider text-lys-faint">EXECUTION BACKENDS</span>
-          <Link to="/execution" className="text-lys-gold hover:underline">open execution →</Link>
-        </div>
-        <div className="flex justify-end pb-2"><Freshness at={snapshotLoadedAt ? Date.parse(snapshotLoadedAt) : null} /></div>
-        <ExecutionBackendStrip backends={view.backends} openrig={view.openrig} loaded={snapshotStatus === 'ready'} />
       </div>
 
       <div className="p-5 font-sans text-[11px] text-lys-faint leading-relaxed">
