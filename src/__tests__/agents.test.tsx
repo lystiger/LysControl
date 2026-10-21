@@ -57,7 +57,8 @@ describe('Agent UI & Portrait Fallbacks', () => {
       />
     );
 
-    expect(screen.getByAltText('Gemini Portrait')).toBeInTheDocument();
+    expect(screen.getByText('G')).toBeInTheDocument();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
     expect(screen.queryByText('BUILD')).not.toBeInTheDocument();
   });
 

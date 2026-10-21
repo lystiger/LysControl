@@ -11,8 +11,6 @@ export const SettingsRoute: React.FC = () => {
     
     ambient3d,
     setAmbient3d,
-    portraits,
-    setPortraits
   } = useConsoleStore();
 
   const { agents } = useAgents();
@@ -59,18 +57,6 @@ export const SettingsRoute: React.FC = () => {
                 />
               </label>
 
-              <div className="flex items-center justify-between text-lys-muted">
-                <span>Portraits Rendering</span>
-                <select
-                  value={portraits}
-                  onChange={(e) => setPortraits(e.target.value as any)}
-                  className="bg-lys-surface-1 border border-lys-default font-sans text-[11px] text-lys-primary px-2 py-0.5 outline-none cursor-pointer"
-                >
-                  <option value="both">Both (WebP + Marks)</option>
-                  <option value="slots">WebP Avatars Only</option>
-                  <option value="marks">Cyber Sigils Only</option>
-                </select>
-              </div>
             </div>
           </div>
         </div>
@@ -98,7 +84,7 @@ export const SettingsRoute: React.FC = () => {
       </div>
 
       <div className="p-5 font-sans text-[11px] text-lys-faint leading-relaxed">
-        Operators come from Hermes (GET /agents). Portraits resolve from <span className="text-lys-muted">public/agents/</span>.
+        Operators come from Hermes (GET /agents).
       </div>
     </div>
   );

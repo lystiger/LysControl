@@ -1,7 +1,6 @@
 import React from 'react';
 import { AgentSummary } from '../../api/types';
 import { agentAccent } from '../../theme/agents';
-import { UNKNOWN } from '../../components/DataStates';
 
 /** Accent for an agent in the UI: its variable first, then any backend colour, then neutral. */
 export function presenceAccent(agent: { id: string; presentation?: { accentColor?: string } }): string {
@@ -32,7 +31,6 @@ export const AgentPresence: React.FC<{ agent: AgentSummary; selected?: boolean; 
             <span className="text-[15px] font-semibold text-lys-primary break-words min-w-0">{agent.displayName}</span>
             <span className={`text-[10px] tracking-wider uppercase ${running ? 'text-lys-success' : 'text-lys-muted'}`}>{agent.status}</span>
           </div>
-          <div className="mt-0.5 text-[12px] text-lys-muted truncate" title={agent.role || UNKNOWN}>{agent.role || UNKNOWN}</div>
           {agent.currentTask && <div className="mt-0.5 text-[12px] text-lys-faint truncate" title={agent.currentTask}>{agent.currentTask}</div>}
         </div>
       </div>

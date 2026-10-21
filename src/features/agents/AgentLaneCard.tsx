@@ -68,9 +68,9 @@ export const AgentLaneCard: React.FC<AgentLaneCardProps> = ({
               </span>
             </div>
 
-            <p className="mt-2 text-[12px] text-lys-secondary line-clamp-2 leading-relaxed">
-              {agent.currentTask || agent.role}
-            </p>
+            {agent.currentTask && (
+              <p className="mt-2 text-[12px] text-lys-secondary line-clamp-2 leading-relaxed">{agent.currentTask}</p>
+            )}
 
             <div className="mt-2.5 flex flex-wrap items-center gap-x-3.5 gap-y-1 font-sans text-[11px] text-lys-muted">
               <span>{isRunning ? 'active runtime' : 'idle'}</span>
@@ -164,9 +164,9 @@ export const AgentLaneCard: React.FC<AgentLaneCardProps> = ({
           )}
         </div>
 
-        <p className="mt-3 text-[12px] text-lys-secondary line-clamp-2 leading-relaxed font-sans">
-          {agent.currentTask || agent.role}
-        </p>
+        {agent.currentTask && (
+          <p className="mt-3 text-[12px] text-lys-secondary line-clamp-2 leading-relaxed font-sans">{agent.currentTask}</p>
+        )}
 
         <div className="flex-1 min-h-3" />
 
