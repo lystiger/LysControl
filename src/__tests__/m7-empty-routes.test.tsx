@@ -21,7 +21,7 @@ const routes = [
   ['/agents', AgentsListRoute, ['No agents', 'No agent selected']],
   ['/usage', UsageRoute, ['No provider usage']],
   ['/events', EventsRoute, ['No events']],
-  ['/execution', ExecutionRoute, ['No deployed seats', 'No execution events']],
+  ['/execution', ExecutionRoute, ['No execution events']],
   ['/settings', SettingsRoute, ['No execution backends reported.']]
 ] as const;
 
