@@ -125,4 +125,31 @@ describe('M9 stream startup idle barrier', () => {
     expect(useConsoleStore.getState().allEvents).toContainEqual(event('during-wait', 60));
     unmount();
   });
+  it('waits until an outstanding response body has arrived, not only its headers', async () => {
+    const body = deferred<Uint8Array>();
+    const stream = new ReadableStream<Uint8Array>({
+      async start(controller) {
+        controller.enqueue(await body.promise);
+        controller.close();
+      }
+    });
+    vi.mocked(fetch).mockResolvedValueOnce(new Response(stream));
+    let agentsSettled = false;
+    const agents = hermesApi.getAgents().then(() => { agentsSettled = true; });
+    const subscribe = vi.spyOn(hermesApi, 'subscribeEvents').mockReturnValue({ unsubscribe: vi.fn() });
+    const { unmount } = renderHook(() => useEventStream());
+    try {
+      await waitFor(() => expect(hermesApi.getTraceEvents).toHaveBeenCalledOnce());
+      await act(async () => { await Promise.resolve(); });
+      expect(agentsSettled).toBe(false);
+      expect(subscribe).not.toHaveBeenCalled();
+      await act(async () => {
+        body.resolve(new TextEncoder().encode('[]'));
+        await agents;
+      });
+      await waitFor(() => expect(subscribe).toHaveBeenCalledOnce());
+    } finally {
+      unmount();
+    }
+  });
 });

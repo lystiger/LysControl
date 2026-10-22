@@ -144,6 +144,14 @@ interface BackendTraceEventDTO {
   metadata?: Record<string, any>;
 }
 
+/** A Hermes response whose JSON body has already been read. Callers use only these members. */
+interface HermesResponse {
+  ok: boolean;
+  status: number;
+  statusText: string;
+  json(): Promise<any>;
+}
+
 export class HttpHermesApi implements HermesApi {
   private baseUrl: string;
   private lastEventId: string | null = null;
@@ -175,15 +183,30 @@ export class HttpHermesApi implements HermesApi {
    * Single entry point for HTTP requests. A network failure is reported as HermesUnreachableError and
    * recorded for the connection banner; any HTTP response, whatever its status, counts as contact.
    */
-  private async request(url: string, init?: RequestInit): Promise<Response> {
-    let res: Response;
+  private async request(url: string, init?: RequestInit): Promise<HermesResponse> {
+    let res: HermesResponse;
     this.requestsInFlight += 1;
     try {
-      // A request that never settles would leave its panel loading forever; after the limit it counts as unreachable.
-      res = await fetch(url, { ...init, signal: init?.signal ?? AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
-    } catch {
-      recordUnreachable(this.baseUrl);
-      throw new HermesUnreachableError(this.baseUrl);
+      let raw: Response;
+      try {
+        // A request that never settles would leave its panel loading forever; after the limit it counts as unreachable.
+        raw = await fetch(url, { ...init, signal: init?.signal ?? AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
+      } catch {
+        recordUnreachable(this.baseUrl);
+        throw new HermesUnreachableError(this.baseUrl);
+      }
+      // Read the body while the request is still counted, so waitForIdle means every response has fully
+      // arrived, not only its headers. A body that is not JSON keeps its parse error for the caller.
+      const body = raw.status === 204 ? { value: undefined } : await Promise.resolve().then(() => raw.json()).then((value: unknown) => ({ value }), (error: unknown) => ({ error }));
+      res = {
+        ok: raw.ok,
+        status: raw.status,
+        statusText: raw.statusText,
+        json: async () => {
+          if ('error' in body) throw body.error;
+          return body.value as any;
+        }
+      };
     } finally {
       this.requestsInFlight -= 1;
       if (this.requestsInFlight === 0) {
