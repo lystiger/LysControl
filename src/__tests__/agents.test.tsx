@@ -48,18 +48,18 @@ describe('Agent UI & Portrait Fallbacks', () => {
         displayName="Gemini"
         presentation={{
           displayName: 'Gemini',
-          avatarUrl: '/agents/gemini.webp',
-          characterCardUrl: '/agents/gemini-card.webp',
+          avatarUrl: '/portrait/gemini.png',
+          characterCardUrl: '/portrait/gemini.png',
           accentColor: '#5B8CFF',
           sigil: 'BUILD'
         }}
         status="RUNNING"
-        phase="BUILD"
       />
     );
 
-    expect(screen.getByAltText('Gemini Portrait')).toBeInTheDocument();
-    expect(screen.getByText('BUILD')).toBeInTheDocument();
+    expect(screen.getByText('G')).toBeInTheDocument();
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+    expect(screen.queryByText('BUILD')).not.toBeInTheDocument();
   });
 
   it('gracefully handles missing presentation object altogether', () => {
@@ -67,15 +67,14 @@ describe('Agent UI & Portrait Fallbacks', () => {
       <AgentPortrait
         displayName="Subagent-99"
         status="IDLE"
-        phase="CUSTOM"
       />
     );
 
     expect(screen.getAllByText('S').length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText('CUSTOM')).toBeInTheDocument();
+    expect(screen.queryByText('CUSTOM')).not.toBeInTheDocument();
   });
 
-  it('renders view character sheet trigger on Agent Detail when characterCardUrl is present', async () => {
+  it('does not offer a character sheet, since the console shows no character art', async () => {
     render(
       <MemoryRouter initialEntries={['/agents/claude']}>
         <Routes>
@@ -86,7 +85,7 @@ describe('Agent UI & Portrait Fallbacks', () => {
 
     // The name appears in the roster and as the dossier heading; the heading is the dossier.
     expect(await screen.findByRole('heading', { name: 'Claude' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /character sheet/i })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /character sheet/i })).not.toBeInTheDocument();
   });
 
   it('renders Agent Detail without view character sheet when characterCardUrl is not present', async () => {

@@ -11,7 +11,6 @@ import { ErrorState, LoadingState, EmptyState, StaleNotice, UNKNOWN, Freshness }
 import { Card } from '../components/Card';
 import { PageHeader, HeaderCount } from '../components/PageHeader';
 import { NotReportedItem } from '../components/NotReported';
-import { HERMES_ART } from '../theme/agentArt';
 import { UNKNOWN_TIME } from '../features/time/format';
 import { eventTime } from './events';
 
@@ -107,7 +106,7 @@ export const OverviewRoute: React.FC = () => {
                 </div>
               </div>
               {recentTrace.length === 0 ? (
-                <EmptyState art={HERMES_ART}>No events</EmptyState>
+                <EmptyState>No events</EmptyState>
               ) : (
                 <div className="flex flex-col">
                   {recentTrace.map((e) => (
@@ -145,7 +144,7 @@ export const OverviewRoute: React.FC = () => {
               {jobsStale && <StaleNotice label="Job queue" error={jobsError} onRetry={refetchJobs} />}
               {jobsError && jobs.length === 0 && <ErrorState label="Job queue" error={jobsError} onRetry={refetchJobs} />}
               {!jobsError && !jobsLoading && jobs.length === 0 && (
-                <EmptyState art={HERMES_ART}>No jobs</EmptyState>
+                <EmptyState>No jobs</EmptyState>
               )}
               {queueShort.map((q) => (
                 <button

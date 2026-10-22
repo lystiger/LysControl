@@ -228,8 +228,6 @@ export class HttpHermesApi implements HermesApi {
         presentation: {
           displayName: dto.presentation?.displayName || dto.displayName || actor.displayName,
           accentColor: actorAccent(dto.id, dto.presentation?.accentColor || actor.accentColor),
-          avatarUrl: dto.presentation?.avatarUrl || `/agents/${dto.id}.webp`,
-          characterCardUrl: dto.presentation?.characterCardUrl || (['gemini', 'claude', 'codex'].includes(dto.id) ? `/agents/${dto.id}-card.webp` : undefined),
           sigil: dto.presentation?.sigil || dto.id.toUpperCase().slice(0, 4),
           code: dto.presentation?.code || dto.id.toUpperCase().slice(0, 4),
           subtitle: dto.presentation?.subtitle || dto.persona?.visual?.subtitle || dto.persona?.summary,
@@ -350,18 +348,14 @@ export class HttpHermesApi implements HermesApi {
     };
   }
 
-  /** Steps of the job that is active right now. Empty when none is active; a historical job is never shown here. */
+  /** Steps of every job that is active right now, in job-list order. Empty when none is active; historical jobs are never shown. */
   async getPipeline(): Promise<PipelineStep[]> {
     const jobs = await this.getJobs();
-    const activeJob = jobs.find((j) => ACTIVE_JOB_STATUSES.includes(j.status));
-    if (!activeJob) {
-      return [];
-    }
-    const detail = await this.getJob(activeJob.id);
-    return (detail?.executionGraph || []).map((s) => ({
-      ...s,
-      jobId: activeJob.id
-    }));
+    const activeJobs = jobs.filter((j) => ACTIVE_JOB_STATUSES.includes(j.status));
+    const details = await Promise.all(activeJobs.map((j) => this.getJob(j.id)));
+    return details.flatMap((detail, idx) =>
+      (detail?.executionGraph || []).map((s) => ({ ...s, jobId: activeJobs[idx].id }))
+    );
   }
 
   /**

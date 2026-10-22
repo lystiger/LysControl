@@ -8,7 +8,6 @@ import { CopyId } from '../../components/CopyId';
 import { ErrorState, LoadingState, Freshness, UNKNOWN, StaleNotice } from '../../components/DataStates';
 import { useArrowNavigation } from '../../components/keyboard';
 import { Card } from '../../components/Card';
-import { HERMES_ART } from '../../theme/agentArt';
 import { formatDateTime } from '../time/format';
 
 /**
@@ -114,11 +113,6 @@ export const MissionBoard: React.FC<{
         )}
       </div>
 
-      {jobs.length === 0 && !loading && !error && (
-        <div className="flex justify-center py-6">
-          <img src={HERMES_ART} alt="" aria-hidden="true" className="h-20 w-auto opacity-70" />
-        </div>
-      )}
     </section>
   );
 };

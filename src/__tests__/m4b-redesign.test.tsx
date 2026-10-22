@@ -1,7 +1,4 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 vi.hoisted(() => {
   delete process.env.VITE_LYSCONTROL_MOCK;
@@ -11,14 +8,11 @@ import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { OverviewRoute } from '../routes/index';
 import { QueueRoute } from '../routes/queue';
-import { AGENT_ART, HERMES_ART } from '../theme/agentArt';
 import { Card } from '../components/Card';
 import { PageHeader } from '../components/PageHeader';
 import { CopyId } from '../components/CopyId';
 import { groupOf } from '../features/jobs/MissionBoard';
 import { installLiveHermes, LIVE_JOB_SUMMARY } from './support/liveHermes';
-
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
 afterEach(() => {
   vi.unstubAllGlobals();
@@ -84,26 +78,6 @@ describe('M4b hierarchy and cards', () => {
   });
 });
 
-describe('M4b agent art: focal crops of the existing files', () => {
-  it('each agent has avatar and card files that exist, with a focus inside the frame and a real zoom', () => {
-    for (const [id, art] of Object.entries(AGENT_ART)) {
-      expect(fs.existsSync(path.join(ROOT, 'public', art.avatar)), `${id} avatar`).toBe(true);
-      expect(fs.existsSync(path.join(ROOT, 'public', art.card)), `${id} card`).toBe(true);
-      for (const focus of [art.avatarFocus, art.cardFocus]) {
-        expect(focus.x).toBeGreaterThanOrEqual(0);
-        expect(focus.x).toBeLessThanOrEqual(1);
-        expect(focus.y).toBeGreaterThanOrEqual(0);
-        expect(focus.y).toBeLessThanOrEqual(1);
-        expect(focus.zoom).toBeGreaterThanOrEqual(1);
-      }
-      expect(art.cardFocus.zoom, `${id} card crop`).toBeGreaterThan(1.5);
-    }
-  });
-
-  it('the Hermes emblem used for empty states exists', () => {
-    expect(fs.existsSync(path.join(ROOT, 'public', HERMES_ART))).toBe(true);
-  });
-});
 
 describe('M4b queue columns by real status', () => {
   it('maps each status to one column with a shape glyph as well as a colour', () => {
