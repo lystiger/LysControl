@@ -9,7 +9,6 @@ export const MOCK_AGENTS: Record<AgentId, AgentDetail> = {
     role: 'Implementation · scaffolding · migrations',
     capabilities: ['build', 'scaffolding', 'migrations', 'refactoring'],
     status: 'RUNNING',
-    phase: 'BUILD',
     currentTask: 'Implementing RedisVehicleStateStore and wiring the migration path off the in-memory store.',
     activeTool: 'tool: pytest',
     contextPct: '34%',
@@ -21,9 +20,9 @@ export const MOCK_AGENTS: Record<AgentId, AgentDetail> = {
       displayName: 'Gemini',
       accentColor: 'var(--lys-agent-gemini)',
       animationProfile: 'quick',
-      sigil: 'BUILD',
+      sigil: 'GEMI',
       code: 'G-01',
-      badge: 'BUILD'
+      badge: 'GEMI'
     },
     input: '44.8k',
     output: '17.9k',
@@ -74,7 +73,6 @@ export const MOCK_AGENTS: Record<AgentId, AgentDetail> = {
     role: 'Architecture · review · hardening · docs',
     capabilities: ['architecture', 'security-review', 'hardening', 'documentation'],
     status: 'RUNNING',
-    phase: 'HARDEN',
     currentTask: 'Reviewing the store contract for TTL and read-after-write races before verification.',
     activeTool: 'tool: read_file',
     contextPct: '46%',
@@ -86,9 +84,9 @@ export const MOCK_AGENTS: Record<AgentId, AgentDetail> = {
       displayName: 'Claude',
       accentColor: 'var(--lys-agent-claude)',
       animationProfile: 'relaxed',
-      sigil: 'HARDEN',
+      sigil: 'CLAU',
       code: 'C-02',
-      badge: 'HARDEN'
+      badge: 'CLAU'
     },
     input: '63.2k',
     output: '21.7k',
@@ -139,7 +137,6 @@ export const MOCK_AGENTS: Record<AgentId, AgentDetail> = {
     role: 'Verification · tests · static analysis · regressions',
     capabilities: ['verification', 'unit-tests', 'static-analysis', 'regression-testing'],
     status: 'WAITING',
-    phase: 'VERIFY',
     currentTask: 'Waiting on HARDEN to release the branch. Verification plan staged: 186 tests, mypy strict, ruff.',
     activeTool: 'tool: —',
     contextPct: '8%',
@@ -151,9 +148,9 @@ export const MOCK_AGENTS: Record<AgentId, AgentDetail> = {
       displayName: 'Codex',
       accentColor: 'var(--lys-agent-codex)',
       animationProfile: 'slow',
-      sigil: 'VERIFY',
+      sigil: 'CODE',
       code: 'X-03',
-      badge: 'VERIFY'
+      badge: 'CODE'
     },
     input: '14.1k',
     output: '1.4k',
@@ -217,7 +214,6 @@ export function createDynamicMockAgent(
     role,
     capabilities,
     status: 'IDLE',
-    phase: 'REVIEW',
     currentTask: 'Awaiting task dispatch from Hermes scheduler.',
     activeTool: 'tool: —',
     contextPct: '5%',
