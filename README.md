@@ -1,5 +1,9 @@
 # LysControl
 
+> [!IMPORTANT]
+> **Archived on 2026-10-22.** The console now lives in [`lystiger/Hermes-lab`](https://github.com/lystiger/Hermes-lab) under `console/`, which has this repository's full history and all of its work up to `715b711`. Make changes there. The agent character art lives in the private `lystiger/LysControl-art`.
+
+
 <div align="center">
 
 **Operator Console for the Hermes Runtime**
