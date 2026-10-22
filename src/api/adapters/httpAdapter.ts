@@ -325,18 +325,14 @@ export class HttpHermesApi implements HermesApi {
     };
   }
 
-  /** Steps of the job that is active right now. Empty when none is active; a historical job is never shown here. */
+  /** Steps of every job that is active right now, in job-list order. Empty when none is active; historical jobs are never shown. */
   async getPipeline(): Promise<PipelineStep[]> {
     const jobs = await this.getJobs();
-    const activeJob = jobs.find((j) => ACTIVE_JOB_STATUSES.includes(j.status));
-    if (!activeJob) {
-      return [];
-    }
-    const detail = await this.getJob(activeJob.id);
-    return (detail?.executionGraph || []).map((s) => ({
-      ...s,
-      jobId: activeJob.id
-    }));
+    const activeJobs = jobs.filter((j) => ACTIVE_JOB_STATUSES.includes(j.status));
+    const details = await Promise.all(activeJobs.map((j) => this.getJob(j.id)));
+    return details.flatMap((detail, idx) =>
+      (detail?.executionGraph || []).map((s) => ({ ...s, jobId: activeJobs[idx].id }))
+    );
   }
 
   /**

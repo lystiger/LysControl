@@ -1,6 +1,21 @@
-import { Job, JobDetail, PipelineStep, ChangedFile } from '../types';
+import { Job, JobDetail, JobPhase, PipelineStep, ChangedFile } from '../types';
+
+/** Start of the running mock job #142, so its elapsed time and phase times line up. */
+const MOCK_ACTIVE_STARTED_AT = new Date(Date.now() - 14 * 60_000).toISOString();
 
 export const MOCK_JOBS: Job[] = [
+  {
+    id: '#142',
+    priority: 'P1',
+    title: 'Redis State Migration',
+    repository: 'moveinmate/backend',
+    branch: 'feat/redis-state',
+    assignedAgentIds: ['gemini', 'claude', 'codex'],
+    status: 'RUNNING',
+    currentPhase: 'build-store',
+    createdAt: MOCK_ACTIVE_STARTED_AT,
+    startedAt: MOCK_ACTIVE_STARTED_AT
+  },
   {
     id: '#143',
     priority: 'P0',
@@ -166,6 +181,21 @@ export const MOCK_CHANGED_FILES: ChangedFile[] = [
   { mark: 'M', path: 'compose.yaml', add: '+9', del: '−0', byActorId: 'gemini', byDisplayName: 'Gemini' }
 ];
 
+/**
+ * Phases shaped like Hermes GET /jobs/{id}, matching the mock agents: Gemini and Claude run a parallel group,
+ * Codex waits on the harden phase. Builder and hardener each appear twice. Times are relative to load.
+ */
+function mockActivePhases(): JobPhase[] {
+  const at = (minutesAgo: number) => new Date(Date.now() - minutesAgo * 60_000).toISOString();
+  return [
+    { id: 'phase-1-scaffold', name: 'scaffold', order: 1, role: 'builder', agentId: 'codex', status: 'SUCCEEDED', startedAt: at(14), completedAt: at(9.5), commitSha: '4ea5e4d1' },
+    { id: 'phase-2-build-store', name: 'build-store', order: 2, role: 'builder', agentId: 'gemini', status: 'RUNNING', startedAt: at(9.5) },
+    { id: 'phase-3-review-contract', name: 'review-contract', order: 3, role: 'hardener', agentId: 'claude', status: 'RUNNING', startedAt: at(9.5) },
+    { id: 'phase-4-harden', name: 'harden', order: 4, role: 'hardener', agentId: 'codex', status: 'PENDING' },
+    { id: 'phase-5-verify', name: 'verify', order: 5, role: 'verifier', agentId: 'claude', status: 'PENDING' }
+  ];
+}
+
 export const MOCK_ACTIVE_JOB_DETAIL: JobDetail = {
   id: '#142',
   priority: 'P1',
@@ -173,11 +203,12 @@ export const MOCK_ACTIVE_JOB_DETAIL: JobDetail = {
   repository: 'moveinmate/backend',
   branch: 'feat/redis-state',
   status: 'RUNNING',
+  currentPhase: 'build-store',
   assignedAgentIds: ['gemini', 'claude', 'codex'],
-  startedAt: '10:38',
+  startedAt: MOCK_ACTIVE_STARTED_AT,
   budget: '80k',
   policy: 'serial · retry 3',
-  phases: [],
+  phases: mockActivePhases(),
   executionGraph: MOCK_PIPELINE.slice(0, 4),
   changedFiles: MOCK_CHANGED_FILES,
   testSummary: {
