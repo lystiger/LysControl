@@ -19,20 +19,20 @@ afterEach(() => {
 });
 
 describe('M4b noise rule: unknown-only panels are not rendered', () => {
-  it('Overview lists unknown-only values on one line, with reasons on hover, and renders no panel for them', async () => {
+  it('Overview puts unknown spend and budget in the summary strip with reasons on hover', async () => {
     installLiveHermes();
     render(
       <MemoryRouter>
         <OverviewRoute />
       </MemoryRouter>
     );
-    const line = await screen.findByText(/Unreported metrics/);
-    const container = line.parentElement!;
-    for (const label of ['estimated spend', 'sprint budget', 'queue projection', 'remaining budget']) {
-      const item = within(container).getByText(label);
+    for (const label of ['SPEND', 'BUDGET']) {
+      const item = (await screen.findByText(label)).parentElement!;
       expect(item).toHaveAttribute('title');
       expect(item.getAttribute('title')!.length).toBeGreaterThan(10);
+      expect(within(item).getByText('—')).toBeInTheDocument();
     }
+    expect(screen.queryByText(/Unreported metrics/)).not.toBeInTheDocument();
     expect(screen.queryByText('SPRINT BUDGET')).not.toBeInTheDocument();
     expect(screen.queryByText('QUEUE PROJECTION')).not.toBeInTheDocument();
     expect(screen.queryByText('EST. SPEND')).not.toBeInTheDocument();

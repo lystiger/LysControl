@@ -1,4 +1,4 @@
-import { Job, JobDetail, JobPhase, PipelineStep, ChangedFile } from '../types';
+import { Job, JobDetail, JobPhase, ChangedFile } from '../types';
 
 /** Start of the running mock job #142, so its elapsed time and phase times line up. */
 const MOCK_ACTIVE_STARTED_AT = new Date(Date.now() - 14 * 60_000).toISOString();
@@ -107,70 +107,6 @@ export const MOCK_JOBS: Job[] = [
   }
 ];
 
-export const MOCK_PIPELINE: PipelineStep[] = [
-  {
-    id: '#142',
-    phase: 'BUILD',
-    agentId: 'gemini',
-    agentName: 'Gemini',
-    task: 'Move VehicleStateStore to Redis',
-    meta: '30.4k · 06:12',
-    state: 'COMPLETED',
-    note: 'implementation complete',
-    mark: '✓'
-  },
-  {
-    id: '#142',
-    phase: 'HARDEN',
-    agentId: 'claude',
-    agentName: 'Claude',
-    task: 'Review store contract — TTL, read-after-write',
-    meta: '02:14',
-    state: 'RUNNING',
-    note: 'reviewing store contract',
-    mark: '●'
-  },
-  {
-    id: '#142',
-    phase: 'VERIFY',
-    agentId: 'codex',
-    agentName: 'Codex',
-    task: '186 tests · mypy strict · ruff',
-    meta: 'staged ~19k',
-    state: 'QUEUED',
-    note: 'waiting for handoff',
-    mark: '○'
-  },
-  {
-    id: '#142',
-    phase: 'COMPLETE',
-    agentId: 'hermes',
-    agentName: 'Hermes',
-    task: 'Merge + report telemetry',
-    meta: '',
-    state: 'IDLE',
-    note: 'merge + report'
-  },
-  {
-    id: '#143',
-    phase: 'BUILD',
-    agentId: 'gemini',
-    agentName: 'Gemini',
-    task: 'Fix production CI — flaky worker teardown',
-    meta: '~18–30k',
-    state: 'CLAIMED'
-  },
-  {
-    id: '#144',
-    phase: 'BUILD',
-    agentId: 'gemini',
-    agentName: 'Gemini',
-    task: 'Authentication refactor — session adapter',
-    meta: 'waiting on repo lock',
-    state: 'BLOCKED'
-  }
-];
-
 export const MOCK_CHANGED_FILES: ChangedFile[] = [
   { mark: 'A', path: 'src/state/redis_store.py', add: '+184', del: '−0', byActorId: 'gemini', byDisplayName: 'Gemini' },
   { mark: 'M', path: 'src/state/store.py', add: '+22', del: '−96', byActorId: 'gemini', byDisplayName: 'Gemini' },
@@ -209,7 +145,8 @@ export const MOCK_ACTIVE_JOB_DETAIL: JobDetail = {
   budget: '80k',
   policy: 'serial · retry 3',
   phases: mockActivePhases(),
-  executionGraph: MOCK_PIPELINE.slice(0, 4),
+  // Built from `phases` by the mock adapter, as Hermes detail is built by the HTTP adapter.
+  executionGraph: [],
   changedFiles: MOCK_CHANGED_FILES,
   testSummary: {
     passed: 184,

@@ -150,7 +150,7 @@ const JobCard: React.FC<{
         </button>
 
         <div className="flex flex-col gap-0.5 text-[12px] text-lys-muted">
-          <span className="truncate" title={job.repository || UNKNOWN}>
+          <span className="truncate" title={[job.repository || UNKNOWN, job.branch].filter(Boolean).join(' · ')}>
             {job.repository || UNKNOWN}{job.branch ? <span className="text-lys-gold"> · {job.branch}</span> : null}
           </span>
           <span className="truncate" title={assigned.length ? assigned.join(' → ') : UNKNOWN}>

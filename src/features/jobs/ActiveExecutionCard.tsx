@@ -2,7 +2,7 @@ import React from 'react';
 import { JobRunTimeline } from './JobRunTimeline';
 import { useJob, useJobs } from '../../api/hooks';
 import { ACTIVE_JOB_STATUSES } from '../../api/adapters/httpAdapter';
-import { ErrorState, Freshness, LoadingState, ResourceError, StaleNotice, UnknownValue } from '../../components/DataStates';
+import { ErrorState, Freshness, LoadingState, ResourceError, StaleNotice } from '../../components/DataStates';
 import { Job } from '../../api/types';
 import { Card } from '../../components/Card';
 import { CopyId } from '../../components/CopyId';
@@ -80,7 +80,7 @@ const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job: activeJob, updatedAt
           <button
             type="button"
             onClick={() => onOpenJob?.(activeJob.id)}
-            className="text-left font-display text-[24px] font-semibold text-lys-primary hover:underline cursor-pointer"
+            title={activeJob.title} className="min-w-0 truncate text-left font-display text-[24px] font-semibold text-lys-primary hover:underline cursor-pointer"
           >
             {activeJob.title}
           </button>
@@ -106,10 +106,6 @@ const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job: activeJob, updatedAt
           )}
         </div>
         <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-lys-subtle text-[12px] text-lys-muted">
-          <span>
-            estimated completion{' '}
-            <UnknownValue reason="Hermes exposes no estimator for phase or job completion" className="text-lys-muted" />
-          </span>
           {onOpenJob && (
             <button type="button" onClick={() => onOpenJob(activeJob.id)} className="text-lys-gold hover:underline cursor-pointer">
               open job →

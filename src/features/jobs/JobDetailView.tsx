@@ -70,8 +70,8 @@ export const JobDetailView: React.FC<JobDetailViewProps> = ({ jobId = '' }) => {
       {/* Header Banner */}
       <div className="p-5 border-b border-lys-subtle bg-lys-surface-0">
         <div className="flex items-center gap-3">
-          <CopyId value={job.id} className="text-[18px] text-lys-faint" />
-          <h2 className="text-[20px] font-semibold text-lys-primary">
+          <CopyId truncate value={job.id} className="max-w-[40%] text-[18px] text-lys-faint" />
+          <h2 title={job.title} className="min-w-0 truncate text-[20px] font-semibold text-lys-primary">
             {job.title}
           </h2>
           <span
@@ -80,7 +80,7 @@ export const JobDetailView: React.FC<JobDetailViewProps> = ({ jobId = '' }) => {
               borderColor: `color-mix(in srgb, ${statusCol} 33%, transparent)`,
               backgroundColor: `color-mix(in srgb, ${statusCol} 8%, transparent)`
             }}
-            className="flex items-center gap-1.5 font-sans text-[11px] tracking-wider border px-2 py-0.5"
+            className="shrink-0 flex items-center gap-1.5 font-sans text-[11px] tracking-wider border px-2 py-0.5"
           >
             {job.status === 'RUNNING' && (
               <span style={{ backgroundColor: statusCol }} className="w-1 h-1 rounded-[1px]" />
@@ -150,7 +150,7 @@ export const JobDetailView: React.FC<JobDetailViewProps> = ({ jobId = '' }) => {
           <div className="pb-8">
             <div className="flex items-center justify-between mb-2.5">
               <span className="font-sans text-[11px] tracking-wider text-lys-faint">
-                RUNTIME EVENTS &amp; TRACES · {job.id}
+                RUNTIME EVENTS &amp; TRACES
               </span>
               <Freshness at={durable.updatedAt} />
             </div>
@@ -164,22 +164,27 @@ export const JobDetailView: React.FC<JobDetailViewProps> = ({ jobId = '' }) => {
               {traceRows.slice(0, 50).map(({ event: e, origin }) => (
                 <div
                   key={e.id}
-                  className="flex items-center gap-3.5 py-1 font-sans text-[11px] border-b border-lys-subtle"
+                  className="grid grid-cols-[70px_90px_100px_minmax(0,1fr)] xl:grid-cols-[80px_110px_120px_minmax(0,1fr)_45px_65px] items-center gap-3 py-1 font-sans text-[11px] border-b border-lys-subtle"
                 >
-                  <span className="w-24 text-lys-faint">{e.ts}</span>
+                  <span title={e.ts} className="min-w-0 truncate text-lys-faint">{e.ts}</span>
                   <span
                     style={{ color: e.source.accentColor || 'var(--lys-text-muted)' }}
-                    className="w-16 font-medium"
+                    title={e.source.displayName} className="min-w-0 truncate font-medium"
                   >
                     {e.source.displayName}
                   </span>
-                  <span className="w-28 text-lys-muted">{e.kind}</span>
+                  <span
+                    title={`${e.kind} · ${e.dur} · ${origin === 'stored' ? 'durable' : origin === 'bus' ? 'in-memory' : 'live'}`}
+                    className="min-w-0 truncate text-lys-muted"
+                  >
+                    {e.kind}
+                  </span>
                   <span className="flex-1 min-w-0 text-lys-secondary break-words font-sans line-clamp-2" title={e.detail}>
                     {e.detail}
                   </span>
-                  <span className="w-16 text-right text-lys-muted">{e.dur}</span>
+                  <span title={e.dur} className="min-w-0 truncate hidden xl:block text-right text-lys-muted">{e.dur}</span>
                   <span
-                    className="w-20 text-right text-lys-faint"
+                    className="min-w-0 truncate hidden xl:block text-right text-lys-faint"
                     title={
                       origin === 'stored'
                         ? 'Durable: canonical stored envelope'
