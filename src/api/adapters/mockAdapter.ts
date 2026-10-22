@@ -183,13 +183,14 @@ export class MockHermesApi implements HermesApi {
 
     const seeds = RAW_SEED_EVENTS.slice(0, limit).map((e, idx) => ({
       id: `seed-${idx}`,
-      ts: fmtTs(baseTs + e.t),
-      rawTs: baseTs + e.t,
+      ts: fmtTs(baseTs + (e.t ?? 0)),
+      rawTs: baseTs + (e.t ?? 0),
       source: resolveActorPresentation(e.a, agentList),
       kind: e.k,
       detail: e.d,
       dur: e.dur || '—',
-      jobId: '#142'
+      jobId: '#142',
+      metadata: e.m
     })).reverse();
 
     return [...seeds, ...createMockExecutionHistory(fmtTs)];

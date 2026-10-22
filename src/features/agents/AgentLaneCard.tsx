@@ -185,7 +185,7 @@ export const AgentLaneCard: React.FC<AgentLaneCardProps> = ({
             <div className="font-sans text-[13px] text-lys-success mt-0.5">{agent.status}</div>
           </div>
           <div>
-            <div className="text-[11px] text-lys-faint tracking-wider font-sans">ROLE</div>
+            <div className="text-[11px] text-lys-faint tracking-wider font-sans">FOCUS</div>
             <div className="font-sans text-[13px] text-lys-muted mt-0.5 truncate">{agent.capabilities[0] || 'agent'}</div>
           </div>
         </div>

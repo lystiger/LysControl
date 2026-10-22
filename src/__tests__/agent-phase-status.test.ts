@@ -18,7 +18,7 @@ function phaseEvent(id: string, rawTs: number, kind: string, agent: string, meta
 
 describe('agent status from sprint phase events', () => {
   beforeEach(() => {
-    useConsoleStore.setState({ agentRuntimeStatuses: {}, allEvents: [] });
+    useConsoleStore.setState({ agentRuntimeStatuses: {}, runningPhases: {}, allEvents: [] });
   });
 
   it('marks an agent RUNNING on phase.started, with the phase as its current task', () => {
